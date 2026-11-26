@@ -135,15 +135,19 @@ static void handle_command(uint8_t cmd, const uint8_t *payload, uint16_t len) {
 void ESP_Bridge_Run(void) {
     KEY_Code_t last_key = KEY_INVALID;
     bool last_ptt = false;
+    uint16_t read_idx = 0;
+    
 
-    memset(gFrameBuffer, 0, sizeof(gFrameBuffer));
+        memset(gFrameBuffer, 0, sizeof(gFrameBuffer));
     ST7565_BlitFullScreen();
 
-         while (1) {
-         uint16_t write_idx = DMA_CH0->ST & 0xFFFU;
-         if (UART_ReadIndex == write_idx) break;
-         uint8_t b = UART_DMA_Buffer[UART_ReadIndex];
-         UART_ReadIndex = (UART_ReadIndex + 1) % sizeof(UART_DMA_Buffer);
+    while (1) {
+        uint16_t write_idx = DMA_CH0->ST & 0xFFFU;
+        if (read_idx == write_idx) break;
+        uint8_t b = UART_DMA_Buffer[read_idx];
+        read_idx = (read_idx + 1) % sizeof(UART_DMA_Buffer);
+        
+         
              
             switch (rx_state) {
                 case 0: if (b == SYNC1) rx_state = 1; break;

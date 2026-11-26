@@ -128,9 +128,8 @@ void Main(void)
 
 		gMenuListCount++;
 	}
-if (KEYBOARD_Poll() != KEY_EXIT) {
-    ESP_Bridge_Run();
-}
+ESP_Bridge_Run();
+	
 	
 	// wait for user to release all butts before moving on
 	if (!GPIO_CheckBit(&GPIOC->DATA, GPIOC_PIN_PTT) ||

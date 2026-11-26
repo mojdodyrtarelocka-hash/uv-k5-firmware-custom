@@ -120,6 +120,7 @@ static void handle_command(uint8_t cmd, const uint8_t *payload, uint16_t len) {
         case CMD_GET_TELEMETRY: {
             uint16_t rssi = BK4819_GetRSSI();
             uint8_t noise = BK4819_GetExNoiceIndicator();
+            uint8_t glitch = BK4819_GetGlitchIndicator();
             uint8_t key = (uint8_t)KEYBOARD_Poll();
             uint8_t resp[5] = {
                 (uint8_t)(rssi & 0xFF), (uint8_t)(rssi >> 8),

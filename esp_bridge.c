@@ -7,6 +7,7 @@
 #include "driver/gpio.h"
 #include "driver/system.h"
 #include "bsp/dp32g030/gpio.h"
+#include "bsp/dp32g030/dma.h"
 #include "misc.h"
 #include "radio.h"
 #include "audio.h"
@@ -138,13 +139,12 @@ void ESP_Bridge_Run(void) {
     memset(gFrameBuffer, 0, sizeof(gFrameBuffer));
     ST7565_BlitFullScreen();
 
-    while (1) {
-        // 1. Читаем все пришедшие байты из кольцевого буфера UART
-        while (UART_IsLogEnabled() || true) {
-            if (UART_ReadIndex == UART_WriteIndex) break;
-            uint8_t b = UART_DMA_Buffer[UART_ReadIndex];
-            UART_ReadIndex = (UART_ReadIndex + 1) % sizeof(UART_DMA_Buffer);
-
+         while (1) {
+         uint16_t write_idx = DMA_CH0->ST & 0xFFFU;
+         if (UART_ReadIndex == write_idx) break;
+         uint8_t b = UART_DMA_Buffer[UART_ReadIndex];
+         UART_ReadIndex = (UART_ReadIndex + 1) % sizeof(UART_DMA_Buffer);
+             
             switch (rx_state) {
                 case 0: if (b == SYNC1) rx_state = 1; break;
                 case 1: rx_state = (b == SYNC2) ? 2 : 0; break;

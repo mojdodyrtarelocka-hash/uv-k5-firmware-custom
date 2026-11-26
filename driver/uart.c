@@ -21,7 +21,7 @@
 #include "driver/uart.h"
 
 static bool UART_IsLogEnabled;
-uint8_t UART_DMA_Buffer[256];
+uint8_t UART_DMA_Buffer[2048];
 
 void UART_Init(void)
 {
@@ -39,7 +39,7 @@ void UART_Init(void)
 		Frequency = 48000000U - Frequency;
 	}
 
-	UART1->BAUD = Frequency / 39053U;
+	UART1->BAUD = Frequency / 115200U;
 	UART1->CTRL = UART_CTRL_RXEN_BITS_ENABLE | UART_CTRL_TXEN_BITS_ENABLE | UART_CTRL_RXDMAEN_BITS_ENABLE;
 	UART1->RXTO = 4;
 	UART1->FC = 0;
